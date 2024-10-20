@@ -750,5 +750,3 @@ React-Redux:
         -- It provides a set of utilities and best practices that make it easier to manage the state of the application.
         -- It reduces the amount of boilerplate code required to set up Redux.
         -- It provides a set of utilities for common Redux tasks, such as creating slices, combining reducers, and adding middleware.
-
-    
