@@ -399,5 +399,3 @@ const store = configureStore({
 ## Author
 Chaitanya
 ```
-
-You can adjust any section or project reference according to your needs. This `README.md` provides a structured and professional overview of your notes.
