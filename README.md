@@ -397,4 +397,4 @@ const store = configureStore({
 ---
 
 ## Author
-Chaitanya
+Chaitanya Gella
