@@ -398,8 +398,6 @@ const store = configureStore({
 
 ## Author
 Chaitanya
-
-This guide serves as a quick reference for React concepts and includes project-based examples for deeper understanding.
 ```
 
 You can adjust any section or project reference according to your needs. This `README.md` provides a structured and professional overview of your notes.
