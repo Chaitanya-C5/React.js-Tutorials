@@ -1,0 +1,754 @@
+React js:
+-------------
+    It is open source library not a framework.
+    It has component based architecture.
+    Declarative --> Tell what we want and React will build UI.
+    In components we write JSX not HTML.
+    Ex: Facebook
+
+Create React App:
+--------------------
+    npx create-react-app <project name>
+    cd <project name>
+    npm start 
+
+Components:
+--------------
+    1. Stateless Function Components:
+        They are JS Functions which can take props(properties) as input and return HTML as output.
+        Use this as much as possible.
+        Ex: Greet.js
+    2.Stateful Class Components:
+        They are ES6 class which can take props(properties) as input and return HTML as output.
+        Additionally they can maintain a private internal state which can be used to describe UI.
+        Ex: Welcome.js
+
+Fragment:
+--------------
+    If we want to write multiple tags then we need to enclose it in a fragment.
+    Ex: 
+        <React.Fragment key={item.id}>
+            <h1> Hi </h1>
+            <h2> Hello </h2>
+        </React.Fragment>
+
+                 or
+
+        <>
+            <h1> Hi </h1>
+            <h2> Hello </h2>
+        </>
+        But in this we can't specify the key attribute which uniquely defines from the rest.
+
+JSX:
+----------
+    JavaScript XML(JSX) -> Extension to JavaScript syntax.
+
+props:
+----------
+    props are immutable.
+    props is just an object which helps to pass the data to components.
+    we can access the elements in the components we can use ``props.children``
+    If we want to use props in class components then we should use ``this.props.<property_name>``
+    Ex: this.props.name;
+
+Destructuring props:
+-------------------------
+    In Functional Components:
+        const freet = (props) => {}
+        1. const freet = ({name, heroName}) = {}
+        2. const freet = (props) => {
+            const {name, heroName} = props;
+            return ();
+        }
+    In Class Components:
+        render() {
+            return <h1> Class Component </h1>
+        }
+        1.  render() {
+                const {name, heroName} = this.props;
+                return <h1> Class Component </h1>
+            }
+
+state:
+--------
+    state is managed within the component.
+    this.state -> Class Component.
+    this.setState -> To change the state, whenever we want to change the value of state based on 
+    previous value then pass Function as an argument.
+    Ex: 
+        subCount = () => {
+        // this.setState({
+        //         count: this.state.count - 1
+        //     }, 
+        //     () =>{
+        //         console.log("Callback Function: ",this.state.count);
+        //     }
+        // )
+
+        this.setState((prevState, props) => ({
+                count : prevState.count + props.subValue
+            }), 
+            () => {
+                console.log("Callback Function: ",this.state.count);
+            }
+        )
+    }
+    If a particular code has to be executed after state change then place the code in Callback Function.
+
+    useState hook -> Functional Component.
+
+Event Binding:
+-------------------
+    If you don't perform event binding in React, you'll encounter a few issues:
+
+        1. Event handlers won't work: Without proper binding, your event handlers may not function as expected. When you try to interact with elements (e.g., clicking a button), nothing will happen.
+
+        2. 'this' context problems: Inside class components, 'this' may be undefined in your event handler methods. This means you won't be able to access component properties or methods.
+
+        3. Performance issues: Incorrect binding can lead to unnecessary re-renders, impacting your application's performance.
+
+        4. Difficulty in passing arguments: Without proper binding, passing additional arguments to event handlers becomes challenging.
+
+        4 ways to perform event binding:
+            1. Binding in render:
+                <button onClick={this.setMessage.bind(this)}>{this.state.buttonText}</button>
+            2. Arrow Function in render:
+                <button onClick={() => this.setMessage()}>{this.state.buttonText}</button>
+            3. Binding in class constructor:
+                constructor() {
+                    super();
+                    this.state = {
+                        message: 'Welcome Visitor',
+                        buttonText: 'Subscribe'
+                    }
+                    this.setMessage = this.setMessage.bind(this);
+                }
+            4. Class property as Arrow Function:
+                setMessage = () => {
+                    this.setState({
+                        message: 'Thanks for subscribing.',
+                        buttonText: 'Subscribed'
+                    })
+                }
+
+    Suggested ways are 3, 4 sometimes while passing parameters we can use 2nd way for easiness.
+    
+Methods as props:
+---------------------
+    Calling parent component methods from child class component.
+
+    import React, { Component } from "react";
+    import ChildComponent from "./ChildComponent";
+
+    class ParentComponent extends Component{
+        
+        constructor() {
+
+            super();
+            this.greetParent = this.greetParent.bind(this);
+        }
+
+        greetParent(childName) {
+            alert(`Hello ${childName}`)
+        }
+
+        render() {
+            return (
+                <div>
+                    <p></p>
+                    <ChildComponent greetHandler={this.greetParent} />
+                </div>
+            )
+        }
+    }
+
+    export default ParentComponent;
+
+    import React, { Component } from "react";
+
+    class ChildComponent extends Component {
+        
+        handleClick = ()=> {
+            this.props.greetHandler("this is child");
+        }
+
+        render() {
+            return(
+                <div>
+                    <button onClick={this.handleClick}>Click Me</button>
+                </div>
+            )
+        }
+    }
+
+    export default ChildComponent;
+
+Conditional Rendering:
+---------------------------
+
+    this.state = {
+        isValid = false;
+    }
+    1st way:
+    ----------
+        render () {
+            if(this.state.isValid) {
+               return <p> Hi </p>
+            } else {
+               return <p> Hello </p>
+            }
+        }
+        
+    
+    2nd way:
+    -----------
+        render () {
+
+            let msg;
+            if(this.state.isValid) {
+               msg = <p> Hi </p>
+            } else {
+               msg = <p> Hello </p>
+            }
+
+            return msg;
+        } 
+
+    3rd way:
+    -----------
+        render () {
+
+            return this.state.isValid ? 
+                (
+                    <p> Hi </p>
+                ) : (
+                    <p> Hello </p>
+                )
+
+        } 
+
+    4th way:
+    -----------
+        render () {
+
+            return this.state.isValid && <p> Hello </p>
+        } 
+
+List Rendering:
+--------------------
+    In list rendering we can use map function and render.
+    But for each item in the list there has to be a unique key
+    because when we add new item in the list, react instead of re-rendering whole component
+    just adds the single item in the list, if we don't do like this then React renders whole 
+    component.
+
+    <h1 key={ListName.id} list={list} />
+
+    For better understanding see lists project.
+
+    Suppose if we don't have a unique id in our list we can use index as key
+    Ex: 
+        const namesList = names.map((name, index) => { <Person key={index}, name={name}} )
+
+    But there are disadvantages with this for understanding watch 19th video of codeevolution.
+    Use only when list is:
+        Static (no adding dynamically).
+        No reordering.
+        When list doesn't have a unique id.
+
+Styling:
+-------------
+    1. Stylesheets:
+        Create styles.css file and import as import "./styles.css";
+    2. Inline styling:
+        Write js object and assign it to a style.
+        const heading = {
+            fontSize: '26px',
+            color: 'green'
+        }
+        <h1 style={heading}>Hi </h1>
+    3. Create styles.module.css and write styles as stylesheets and import it as
+        import styles from "./styles.module.css";
+        <h1 className={styles.successClass}>Hi</h1>
+
+Form Handling:
+-----------------
+    See FormHandling Project.
+
+Lifecycle methods for class components:
+---------------------------------------------
+    1. Mounting - When a component is created and inserted into DOM.
+        In this we have :
+            -- constructor ()
+            -- static getDerivedStateFromProps(props, state)
+            -- render()
+            -- componentDidMount() -> Here we can make HTTP requests and AJAX Calls.
+
+        
+    2. Updating - When a component is re-rendering because of update of state or props.
+            In this we have :
+            -- static getDerivedStateFromProps(props, state)
+            -- shouldComponentUpdate()
+            -- render()
+            -- getSnapshotBeforeUpdate(prevProps, prevState)
+            -- componentDidUpdate(prevProps, prevState, snapshot)
+
+    3. Unmounting - When a component is removed from DOM.
+            In this we have :
+            -- componentWillUnmount()
+  
+    4. Error Handling - When there is an error during re-rendering in life cycle or in the          constructor of any child component.
+            In this we have :
+            -- static getDerivedStateFromError(error)
+            -- componentDidCatch(error, info)
+  
+Components V/S Pure Components:
+--------------------------------------
+    Pure Components for class Components.
+    See 26th video of codeevolution.
+
+    For Functional Components use:
+        export default React.memo(FunctionalComponentName);
+    
+Refs:
+---------
+    To access DOM Nodes directly.
+
+    We can access from 1 class component to another class component but not to another Functional 
+    component.
+    If we want to access from class component to Functional component then we can use
+    const ForwardComp = React.forwardRef((props,ref) => {
+        return (
+            <>
+            </>
+        )
+    });
+
+    see refsdemo project.
+
+Portals:
+----------
+    -----> See 31_portals project
+
+    React Portals provide a way to render a child component into a different part of the DOM tree, outside the hierarchy of the parent component.
+    In general we keep all components in root div.
+    Suppose if we want to add some more components to a different div then we can use this.
+
+    Real-life Use Cases:
+    -----------------------
+        -- Modals that need to overlay the entire page.
+        -- Tooltips or Popups that need to escape their parent’s overflow settings.
+        -- Context Menus that need to appear on top of everything else.
+
+    Why Include the Portal in the App Component?
+    ---------------------------------------------------
+        Logical Grouping:
+        ----------------------
+        You might need the portal to logically belong to the flow of your application. For example, a modal or a tooltip could be related to a button or content in the App component. By keeping the Portal component inside the App, you can control its rendering based on the state of the App.
+
+        Advantage: 
+        It provides a clear relationship between when a portal is rendered and what triggers its rendering.
+
+        Disadvantage: 
+        Even though the modal is visually separated, its lifecycle and logic are still tied to the parent, which may cause unwanted behavior if the parent re-renders unnecessarily.
+
+        Rendering Outside DOM Hierarchy, But Inside Application Logic:
+        ------------------------------------------------------------------
+        Portals allow you to render components outside the root DOM node but keep the portal inside the React component tree for logical consistency.
+
+        Advantage: 
+        The portal maintains React’s event-handling and state logic even if it's rendered outside the visual structure of the parent.
+
+        Disadvantage: 
+        You still need to manage the portal’s existence in the parent component, which could add complexity.
+
+Error Boundary:
+-------------------
+    see --> 32_error_boundary project
+
+    Error boundaries are react components that catch JavaScript error in their child component tree
+    and logs those errors, and display a fallback UI.
+
+    Class component that implements either one or both of the lifecycle methods getDerivedStateFromError() -> used to handle errors thrown in the rendering process of child components. It allows updating the state so the UI can render a fallback when an error occurs.
+     or 
+    componentDidCatch() -> used to log error.
+    They will catch the error and display the fallback UI.
+
+Higher Order Components(HOC):
+----------------------------------
+    see ---> 34_higher_order_component project
+    
+    -- HOC is a pattern where a component accepts another component and returns enchanced component.
+    -- Naming convention: withCounter.jsx
+    -- This reduces the redundancy of code.
+    -- If in the App component if we are trying to pass props to child components but they won't be passed because these props will be passed to HOC we need to pass from HOC to child components inorder to do so we can use spread operator.
+
+Render props:
+-----------------
+    The term `render prop` refers to a technique for sharing code between react components using a prop whose value is a function.
+
+Context:
+-----------
+    Context provides a way to pass data through component tree without having to pass
+    props down manually at every level. 
+    Steps to use:
+        1. Create context --> const userContext = React.createContext()
+        2. Provide a context value --> const UserProvider = userContext.Provider
+        3. Consume the context value --> const UserConsumer = userContext.Consumer
+    We can also set a default value:
+        const userContext = React.createContext('code')
+
+Http:
+---------
+    see ---> 42_http project.
+
+    React uses a HTTP library inorder to send data or read data from server.
+    We can use Axios or fetch API.
+    For Axios:
+        -- npm install axios
+        -- import axios from 'axios'
+        -- axios.get('')
+            .then(response => {
+
+            })
+            .catch(error => {
+
+            })
+
+Hooks:
+-----------
+    -- Hooks are a new feature in React 16.8 which allows users to use React Features without having
+        to write class.
+    -- Hooks are special functions that allow you to hook into React Features.
+
+    Rules:
+    --------
+        1. Only call hooks at the top level.
+        2. Only call hooks from React functions don't call hooks inside loops, conditions or 
+           nested functions.
+
+    Drawbacks of class components :
+    ------------------------------------
+        1. We need to understand this keyword and also to bind event handlers.
+        2. There is no way to reuse stateful component logic.
+        3. Becomes complex while implementing Data fetching and subscribing to events and code is
+            scattered across lifecycle methods.
+        4. Cannot break code into smaller components.
+
+    -- We need to pass a function to setCount function if we want to update based on previous state. For better understanding ---> see 44_hooks project in that see Counter2.jsx
+
+    -- State with Objects ---> see 44_hooks project in that see Objects.jsx
+    -- State with Arrays ---> see 44_hooks project in that see Arrays.jsx
+
+    useEffect hook:
+    -----------------
+        -- The useEffect hook in React is used to run side effects in your function components. A "side effect" is any operation that affects something outside the component, like fetching data, interacting with the DOM, or setting timers.
+
+        -- It runs after every render.
+
+        When to use:
+            -- Fetching data from an API.
+            -- Subscribing to services (like WebSocket or a timer).
+            -- Manually changing the DOM.
+
+        We can make useEffect to run based on condition also. 
+         ---> see 44_hooks project in that see useEffect.jsx
+
+        We can make useEffect to run for once also.
+         ---> see 44_hooks project in that see MouseMove.jsx
+
+        useEffect with cleanUp code - that is when component is unmounted.
+         ---> see 44_hooks project in that see CleanUp.jsx
+
+    useContext() hook:
+    ----------------------
+        see ---> 60_use_context project
+
+        The first 2 steps are same:
+            1. Create context --> const UserContext = React.createContext()
+            2. Provide a context value --> <UserContext.Provider value=""> <> </> </UserContext.Provider>
+            3. In this step the way changes we can directly retrieve the value from UserConsumer
+                const name = useContext(UserContext)
+                we directly got the value.
+    
+    useReducer() hook:
+    -----------------------
+        see ---> 61_use_reducer project
+        see ---> reduce - useReducer image in images folder.
+
+        -- useReducer() is hook for state management.
+        -- It is an alternative for useState()
+        -- useState() is built using useReducer()
+
+        useReducer(reducer, initalState)
+        -- reducer(currentState, action)
+
+    When to use useState and when useReducer:
+    ----------------------------------------------
+        see ---> When_to_use_useState_useReducer image.
+    
+    useCallback() hooks:
+    --------------------------------------
+
+        useCallback() is mainly used to stop unnecessary re-rendering.
+        When props are not present in components then we can React.memo(component_name) can stop re-rendering but when props are present then we can use
+        useCallback(()=>{},[dependency_list]) to stop re-rendering.
+
+        With React.Memo() the child components only re-renders only when the props changes otherwise
+        there is no re-rendering.
+
+        useCallback() memoizes a function, meaning it will return the same instance of the function unless its dependencies change.
+
+        Ex: const func = useCallback(() => {
+            setState(count+1)
+        },[count])
+
+        Here this func is cached.
+
+    useMemo() hook:
+    -------------------
+        see ---> 70_use_memo project
+
+        useMemo() is mainly used to stop unnecessary re-rendering.
+        When props are not present in components then we can React.memo(component_name) can stop re-rendering but when props are present then we can use
+        const func_value = useMemo(()=>{},[dependency_list]) to stop re-rendering.
+
+        useMemo() memoizes the result (or return value) of a computation. It caches the result of an expensive calculation and only recalculates it if its dependencies change.
+
+        Ex: const func_value = useMemo(() => {
+            setState(count+1)
+        },[count])
+
+        Here this func_value is cached.
+
+    useCallback() V/S useMemo():
+    ---------------------------------
+        -- useCallback() is for memoizing functions so they don’t get re-created unless their dependencies change.
+
+        -- useMemo() is for memoizing the result of an expensive computation so the computation doesn’t run again unless the dependencies change.
+
+    useRef() hook:
+    ------------------
+        see ---> 72_use_ref project
+
+        useRef is a React hook that allows you to persist values (like DOM elements or variables) across renders without causing a re-render. It’s commonly used for accessing or manipulating DOM elements directly or storing mutable values.
+
+    Custom Hooks:
+    ----------------------
+        -- We can create custom hooks inorder to reuse the logic same like Higher order components
+        -- While creating Naming convention should useCustomHook `use should be present at beginning`.
+
+Typescript:
+--------------
+    see ---> typescript project
+
+    For creating react Typescript project we need to use:
+        npx create-react-app project_name --template typescript
+
+    Props:
+    ---------
+        type GreetProps = {
+            name: string
+        }
+
+        We can also give custom datatypes like:
+            type GreetProps = {
+                status: 'loading' | 'successful' | 'error'
+            }
+
+        const Greet = (props: GreetProps) => {
+            return (
+                <div>Greet {props.name} </div>
+            )
+        }
+
+        or we can destructure like this: 
+            -- const Greet = ({name}: GreetProps) => {}
+
+        We can keep all types in one file called <Filename>.types.ts
+
+        ctrl + k --> direct edit,
+        ctrl + l --> chat ,
+        ctrl + enter --> searches complete codebase.
+        
+        Extracting Component Props:
+        ----------------------------
+            When working with TypeScript and React, it's often useful to extract the prop types of a component. This can be done using the React.ComponentProps utility type. Here's how:
+
+            1. For function components:
+                type GreetProps = React.ComponentProps<typeof Greet>;
+                Here Greet is a component.
+
+            2. For class components:
+                type ClassComponentProps = React.ComponentProps<typeof ClassComponent>;
+
+            This technique allows you to reuse prop types, create more specific types based on existing components, and ensure type consistency across your application.
+    
+React Router:
+--------------
+    see ---> react_router project.
+
+    -- React router is a library for routing in react.
+    -- It is used to navigate between pages in react application.
+    -- It is used to define multiple routes in the application.
+
+    -- npm install react-router-dom
+
+    -- Browser Router:
+    ----------------------------------
+        We need to wrap the App component with BrowserRouter to use react router.
+            <BrowserRouter> 
+                <App />
+            </BrowserRouter>
+
+    -- Defining Routes:
+    ----------------------------------
+        We can use the below code to define routes:
+            <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/about' element={<About />} />
+            </Routes>
+
+    -- Link Component:
+    ----------------------------------
+        We can use Link to navigate between pages:
+            <nav>
+                <Link to='/'>Home</Link> &nbsp; &nbsp; &nbsp;
+                <Link to='/about'>About</Link>
+            </nav>
+
+    -- NavLink Component:
+    ----------------------------------
+        We can also use NavLink to navigate between pages:
+            <nav>
+                <NavLink to='/'>Home</NavLink> &nbsp; &nbsp; &nbsp;
+                <NavLink to='/about'>About</NavLink>
+            </nav>
+            
+        The NavLink has an active class when the route is active.
+        We can change the style of active class.
+
+    -- useNavigate Hook:
+    ----------------------------------
+        We can also move to different pages using useNavigate hook.
+            const navigate = useNavigate();
+            navigate('/about');
+            navigate(-1); // to move to previous page.
+            navigate(1); // to move to next page.
+            navigate('/email-confirm',{replace: true}); // to replace the current page with new page.
+
+    -- 404 Error Handling:
+    ----------------------------------
+        We can show a different page when the route is not defined.
+            <Route path='*' element={<NoPage />} />
+        This is used to handle the 404 error page.
+
+    -- Nested Routes:
+    ----------------------------------
+        We can use nested routes also.
+            <Route path='/products' element={<Products />}>
+                <Route path='featured' element={<Featured />} />
+                <Route path='new' element={<New />} />
+            </Route>
+
+            <Link to='featured'>Featured</Link> 
+            <Link to='new'>New</Link> 
+            <Outlet /> 
+        
+        Outlet component is used to render the nested routes. It acts like a placeholder where the nested routes will be rendered. React Router will render the corresponding component based on the current URL and it will render that component in the Outlet component.
+
+        We need to use Outlet component in the component where the nested routes are present.
+        We should not define forward slash (/) in the nested routes.
+
+        OR ELSE:
+            <Link to='/products/featured'>Featured</Link> 
+            <Link to='/products/new'>New</Link> 
+            <Outlet /> 
+
+        We can write nested routes like this also.
+
+    -- Index Route:
+    ----------------------------------
+        We can use Index Route also.
+            <Route index element={<Featured />} />
+        The main difference between Index Route and other Routes is that Index Route is used to render the default route.
+
+    -- useParams Hook:
+    ----------------------------------
+        We can use useParams hook to get the parameters from the URL.
+
+            const params = useParams();
+            const userId = params.userId;
+
+    -- useSearchParams Hook:
+    ----------------------------------
+        We can use useSearchParams hook to get the search parameters from the URL.
+
+            const [searchParams, setSearchParams] = useSearchParams();
+            const search = searchParams.get('search');
+
+            setSearchParams({search: 'newValue', otherParam: 'otherValue'});
+
+    Lazy Loading:
+    ------------------
+
+        Lazy loading is a technique to delay the loading of a component until it is needed.
+        We can use lazy() function to lazy load a component.
+
+        const LazyComponent = lazy(() => import('./LazyComponent'));
+
+        We need to wrap the lazy component with Suspense component.
+
+        <Suspense fallback={<div>Loading...</div>}>
+            <LazyComponent />
+        </Suspense>
+
+        We need to use Suspense component to wrap the lazy component.
+        Suspense component is used to wrap the lazy component and it is used to display a fallback UI while the lazy component is loading.
+
+        We need to use fallback prop in Suspense component to define what to show while the lazy component is loading.
+        
+    Navigate Component:
+    ----------------------
+        We can use Navigate component to redirect to a different route.
+
+        import { Navigate } from 'react-router-dom';
+
+        <Navigate to='/login' />
+
+        We need to use Navigate component to redirect to a different route.
+        Navigate component is used to redirect to a different route.
+        
+    useLocation Hook:
+    ----------------------
+        We can use useLocation hook to get the location of the current route.
+
+        import { useLocation } from 'react-router-dom';
+
+        const location = useLocation();
+        console.log(location.pathname); // Output: /login
+        console.log(location.search); // Output: ?username=admin
+            
+        
+React-Redux:
+------------
+    see ---> react-redux project.
+
+    -- React-Redux is a library for managing state in react applications.
+    -- It is used to connect react application with redux.
+    -- It is used to manage the state of the application in a centralized way.
+
+    Redux Toolkit:
+    -----------------
+        -- Redux Toolkit is a library for managing state in react applications.
+        -- It is used to manage the state of the application in a centralized way.
+
+    Why Redux Toolkit?
+    --------------------
+        -- Redux Toolkit simplifies the process of setting up Redux in a React application.
+        -- It provides a set of utilities and best practices that make it easier to manage the state of the application.
+        -- It reduces the amount of boilerplate code required to set up Redux.
+        -- It provides a set of utilities for common Redux tasks, such as creating slices, combining reducers, and adding middleware.
+
+    
